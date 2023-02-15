@@ -1,0 +1,30 @@
+#!/bin/bash
+# From GersonFeDutra
+
+# log="/tmp/#0bca6a-log.md"
+
+#for file in $NAUTILUS_SCRIPT_SELECTED_FILE_PATHS
+#for line in "$@"; do
+echo "$NAUTILUS_SCRIPT_SELECTED_FILE_PATHS" | while read file
+do
+	
+	#echo "$file" >> $log
+	#xdg-open $log
+
+	#base=$path
+
+	#dir="$file"
+	dir=$file
+	
+	if [ -f "$dir" ];then
+    # Is File
+		file="$(basename "${dir}")"
+		dir="$(dirname "${dir}")"
+		#FILE="$(basename "${dir}")"
+		#there should be an embracing around the $dir
+		guake --show -n "$dir" -r "$dir" -t -e "./\"${file}\""
+	elif [ -d "$dir" ]; then
+    # Is Directory
+		guake --show -n "$dir" -r "$dir" -t
+	fi
+done

@@ -1,0 +1,32 @@
+#!/bin/bash
+
+opt=$(printf " Power Off\n Restart\n Update&Reboot (yay)\n Update&TurnOff (pacman)\n Lock\n Exit" | rofi -dmenu -i -theme-str '@import "power.rasi"')
+#opt=$(printf "Power Off\nRestart\nLock" | rofi -dmenu -i)
+
+lock() {
+    is_eDP1_enabled=$(xrandr | grep 'eDP1 connected primary [0-9]')
+    is_HDMI1_enabled=$(xrandr | grep 'HDMI1 connected [0-9]')
+
+    if [ ! -z "$is_eDP1_enabled" ]; then
+        if [ ! -z "$is_HDMI1_enabled" ]; then
+            i3lock -i ~/Pictures/Wallpapers/screenlocks/all.png
+        else
+            i3lock -i ~/Pictures/Wallpapers/screenlocks/eDP1.png
+        fi
+    else
+        i3lock -i ~/Pictures/Wallpapers/screenlocks/HDMI1.png
+    fi
+}
+
+
+case "$opt" in
+    " Power Off") poweroff ;;
+    " Restart") reboot ;;
+    #"Lock") slock ;;
+    " Update&Reboot (yay)") st -e ~/.local/bin/update_and_reboot ;;
+    " Update&TurnOff (pacman)") st -e ~/.local/bin/update_and_poweroff ;;
+    " Lock") lock ;;
+    " Exit") i3-msg exit ;;
+    *) exit 1 ;;
+esac
+

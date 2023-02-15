@@ -1,0 +1,2 @@
+#!/bin/bash
+maim --window $(xdotool getactivewindow) $(~/.scripts/files/ask.py)

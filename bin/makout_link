@@ -1,0 +1,42 @@
+#!/bin/bash
+
+file=$(readlink -f "$1")
+
+cd /tmp/
+echo "$file"
+
+#cc "$file"
+
+file_dir=$(dirname "$file")
+samples_dir="$file_dir/.samples"
+sample=""
+samples_table="$samples_dir/samples.ini"
+
+if [[ ! -d "$samples_dir" ]]; then
+    mkdir "$samples_dir"
+fi
+
+if [[ ! -f "$samples_table" ]]; then
+    # add sample table
+    touch "$samples_table"
+fi
+
+sample=$(grep -Po "(?<=$file=).*$" "$samples_table")
+if [[ "$?" != "0" ]]; then
+    # create sample file
+    #read -r -p "Insert sample file name: " sample_name
+    sample_name=$(basename "$file.txt")
+    echo "$sample_name"
+    sample="$samples_dir/$sample_name"
+    touch "$sample"
+    echo "$file=$sample" >> "$samples_table"
+    
+    #"${EDITOR:-vi}" "$sample"
+    #vi "$sample"
+    #nvim "$sample"
+    st -e nvim "$sample" 2> /tmp/nvim.log
+    #echo "Lorem ipsum dolor sit amet." >> "$sample"
+fi
+
+rm /tmp/test
+ln -s "$sample" /tmp/test
